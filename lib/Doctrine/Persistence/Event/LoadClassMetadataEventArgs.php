@@ -17,6 +17,10 @@ class LoadClassMetadataEventArgs extends EventArgs
     /** @var ObjectManager */
     private $objectManager;
 
+    /**
+     * @template T of object
+     * @psalm-param ClassMetadata<T> $classMetadata
+     */
     public function __construct(ClassMetadata $classMetadata, ObjectManager $objectManager)
     {
         $this->classMetadata = $classMetadata;
@@ -27,6 +31,9 @@ class LoadClassMetadataEventArgs extends EventArgs
      * Retrieves the associated ClassMetadata.
      *
      * @return ClassMetadata
+     *
+     * @template T of object
+     * @psalm-return ClassMetadata<T>
      */
     public function getClassMetadata()
     {

@@ -15,6 +15,10 @@ interface MappingDriver
      * @param string $className
      *
      * @return void
+     *
+     * @template T of object
+     * @psalm-param class-string<T> $className
+     * @psalm-param ClassMetadata<T> $metadata
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata);
 

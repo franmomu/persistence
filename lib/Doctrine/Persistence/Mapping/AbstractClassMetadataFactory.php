@@ -66,6 +66,9 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * Returns an array of all the loaded metadata currently in memory.
      *
      * @return ClassMetadata[]
+     *
+     * @template T of object
+     * @psalm-return ClassMetadata<T>[]
      */
     public function getLoadedMetadata()
     {
@@ -122,6 +125,9 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * Wakes up reflection after ClassMetadata gets unserialized from cache.
      *
      * @return void
+     *
+     * @template T of object
+     * @psalm-param ClassMetadata<T> $class
      */
     abstract protected function wakeupReflection(ClassMetadata $class, ReflectionService $reflService);
 
@@ -129,6 +135,9 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * Initializes Reflection after ClassMetadata was constructed.
      *
      * @return void
+     *
+     * @template T of object
+     * @psalm-param ClassMetadata<T> $class
      */
     abstract protected function initializeReflection(ClassMetadata $class, ReflectionService $reflService);
 
@@ -138,6 +147,9 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * This method should return false for mapped superclasses or embedded classes.
      *
      * @return bool
+     *
+     * @template T of object
+     * @psalm-param ClassMetadata<T> $class
      */
     abstract protected function isEntity(ClassMetadata $class);
 
@@ -150,6 +162,10 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      *
      * @throws ReflectionException
      * @throws MappingException
+     *
+     * @template T of object
+     * @psalm-param class-string<T>|string $className
+     * @psalm-return ClassMetadata<T>
      */
     public function getMetadataFor($className)
     {
@@ -230,6 +246,10 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param ClassMetadata $class
      *
      * @return void
+     *
+     * @template T of object
+     * @psalm-param class-string<T> $className
+     * @psalm-param ClassMetadata<T> $class
      */
     public function setMetadataFor($className, $class)
     {
@@ -272,6 +292,9 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param string $name The name of the class for which the metadata should get loaded.
      *
      * @return string[]
+     *
+     * @template T of object
+     * @psalm-param class-string<T> $name
      */
     protected function loadMetadata($name)
     {
@@ -330,6 +353,10 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param string $className
      *
      * @return ClassMetadata|null
+     *
+     * @template T of object
+     * @psalm-param class-string<T> $className
+     * @psalm-return ClassMetadata<T>|null
      */
     protected function onNotFoundMetadata($className)
     {
@@ -346,6 +373,11 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      *                                                 that are not marked as mapped superclasses.
      *
      * @return void
+     *
+     * @template T of object
+     * @template P of object
+     * @psalm-param ClassMetadata<T> $class
+     * @psalm-param ClassMetadata<P> $parent
      */
     abstract protected function doLoadMetadata($class, $parent, $rootEntityFound, array $nonSuperclassParents);
 
@@ -355,6 +387,10 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param string $className
      *
      * @return ClassMetadata
+     *
+     * @template T of object
+     * @psalm-param class-string<T> $className
+     * @psalm-return ClassMetadata<T>
      */
     abstract protected function newClassMetadataInstance($className);
 

@@ -128,9 +128,9 @@ class RuntimePublicReflectionPropertyTestProxyMock implements Proxy
     }
 
     /**
-     * {@inheritDoc}
+     * @return array<string, mixed>
      */
-    public function __getLazyProperties()
+    public function __getLazyProperties(): array
     {
         throw new LogicException('Not implemented');
     }

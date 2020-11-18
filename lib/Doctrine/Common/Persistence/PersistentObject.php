@@ -143,6 +143,8 @@ abstract class PersistentObject implements ObjectManagerAware
      * @param object        $targetObject
      *
      * @return void
+     *
+     * @psalm-param class-string $targetClass
      */
     private function completeOwningSide($field, $targetClass, $targetObject)
     {

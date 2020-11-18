@@ -75,7 +75,7 @@ interface ManagerRegistry extends ConnectionRegistry
      *
      * @return ObjectRepository
      *
-     * @template T
+     * @template T of object
      * @psalm-param class-string<T> $persistentObject
      * @psalm-return ObjectRepository<T>
      */

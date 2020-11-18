@@ -12,6 +12,9 @@ interface ClassMetadataFactory
      * mapping driver.
      *
      * @return ClassMetadata[] The ClassMetadata instances of all mapped classes.
+     *
+     * @template T of object
+     * @phpstan-return ClassMetadata<T>[]
      */
     public function getAllMetadata();
 
@@ -21,6 +24,10 @@ interface ClassMetadataFactory
      * @param string $className The name of the class.
      *
      * @return ClassMetadata
+     *
+     * @template T of object
+     * @phpstan-param class-string<T> $className
+     * @phpstan-return ClassMetadata<T>
      */
     public function getMetadataFor($className);
 
@@ -30,6 +37,9 @@ interface ClassMetadataFactory
      * @param string $className
      *
      * @return bool TRUE if the metadata of the class in question is already loaded, FALSE otherwise.
+     *
+     * @template T of object
+     * @phpstan-param class-string<T> $className
      */
     public function hasMetadataFor($className);
 
@@ -38,6 +48,12 @@ interface ClassMetadataFactory
      *
      * @param string        $className
      * @param ClassMetadata $class
+     *
+     * @return void
+     *
+     * @template T of object
+     * @phpstan-param class-string<T> $className
+     * @phpstan-param ClassMetadata<T> $class
      */
     public function setMetadataFor($className, $class);
 

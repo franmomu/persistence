@@ -24,6 +24,9 @@ interface ObjectManagerAware
      * Injects responsible ObjectManager and the ClassMetadata into this persistent object.
      *
      * @return void
+     *
+     * @template T of object
+     * @phpstan-param ClassMetadata<T> $classMetadata
      */
     public function injectObjectManager(ObjectManager $objectManager, ClassMetadata $classMetadata);
 }

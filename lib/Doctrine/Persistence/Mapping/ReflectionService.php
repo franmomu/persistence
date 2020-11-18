@@ -46,6 +46,10 @@ interface ReflectionService
      * @param string $class
      *
      * @return ReflectionClass|null
+     *
+     * @template T of object
+     * @phpstan-param class-string<T> $class
+     * @phpstan-return ReflectionClass<T>|null
      */
     public function getClass($class);
 

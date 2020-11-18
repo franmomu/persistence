@@ -20,7 +20,7 @@ interface ObjectManager
      *
      * @return object|null The found object.
      *
-     * @template T
+     * @template T of object
      * @psalm-param class-string<T> $className
      * @psalm-return T|null
      */
@@ -118,7 +118,7 @@ interface ObjectManager
      *
      * @return ObjectRepository
      *
-     * @template T
+     * @template T of object
      * @psalm-param class-string<T> $className
      * @psalm-return ObjectRepository<T>
      */
@@ -133,6 +133,10 @@ interface ObjectManager
      * @param string $className
      *
      * @return ClassMetadata
+     *
+     * @template T of object
+     * @psalm-param class-string<T> $className
+     * @psalm-return ClassMetadata<T>
      */
     public function getClassMetadata($className);
 

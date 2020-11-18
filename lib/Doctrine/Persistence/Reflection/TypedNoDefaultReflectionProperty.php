@@ -28,6 +28,8 @@ class TypedNoDefaultReflectionProperty extends ReflectionProperty
      * NULL which is not supported, instead unset() to uninitialize.
      *
      * @link https://github.com/doctrine/orm/issues/7999
+     *
+     * @param mixed $object
      */
     public function setValue($object, $value = null)
     {

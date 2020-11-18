@@ -141,6 +141,9 @@ abstract class FileDriver implements MappingDriver
      * @param string $file The mapping file to load.
      *
      * @return ClassMetadata[]
+     *
+     * @template T of object
+     * @phpstan-return ClassMetadata<T>[]
      */
     abstract protected function loadMappingFile($file);
 
