@@ -112,7 +112,7 @@ class ClassMetadataFactoryTest extends DoctrineTestCase
     {
         $classMetadata = $this->createMock(ClassMetadata::class);
 
-        $this->cmf->fallbackCallback = static function () use ($classMetadata) {
+        $this->cmf->fallbackCallback = static function () use ($classMetadata): ClassMetadata {
             return $classMetadata;
         };
 
@@ -148,9 +148,9 @@ class ClassMetadataFactoryTest extends DoctrineTestCase
         $metadata = $this->createMock(ClassMetadata::class);
         assert($metadata instanceof ClassMetadata);
 
-        $fallbackCallback = $this->getMockBuilder(stdClass::class)->setMethods(['__invoke'])->getMock();
-
-        $fallbackCallback->expects(self::any())->method('__invoke')->willReturn($metadata);
+        $fallbackCallback = static function () use ($metadata): ClassMetadata {
+            return $metadata;
+        };
 
         $this->cmf->fallbackCallback = $fallbackCallback;
 

@@ -187,6 +187,8 @@ abstract class FileDriver implements MappingDriver
 
     /**
      * Sets the locator used to discover mapping files by className.
+     *
+     * @return void
      */
     public function setLocator(FileLocator $locator)
     {
