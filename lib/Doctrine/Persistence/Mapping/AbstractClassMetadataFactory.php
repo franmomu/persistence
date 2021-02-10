@@ -206,6 +206,7 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
             $this->loadedMetadata[$className] = $this->loadedMetadata[$realClassName];
         }
 
+        /** @psalm-var ClassMetadata */
         return $this->loadedMetadata[$className];
     }
 
