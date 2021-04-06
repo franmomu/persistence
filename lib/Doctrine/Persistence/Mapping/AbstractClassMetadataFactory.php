@@ -17,6 +17,7 @@ use function array_keys;
 use function array_map;
 use function array_reverse;
 use function array_unshift;
+use function assert;
 use function explode;
 use function sprintf;
 use function str_replace;
@@ -57,6 +58,9 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
 
     /** @var ReflectionService|null */
     private $reflectionService = null;
+
+    /** @var ProxyClassNameResolver|null */
+    private $proxyClassNameResolver = null;
 
     /**
      * Sets the cache driver used by the factory to cache ClassMetadata instances.
@@ -140,6 +144,11 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
         return $metadata;
     }
 
+    public function setProxyClassNameResolver(ProxyClassNameResolver $resolver): void
+    {
+        $this->proxyClassNameResolver = $resolver;
+    }
+
     /**
      * Lazy initialization of this stuff, especially the metadata driver,
      * since these are not needed at all when a metadata cache is active.
@@ -155,6 +164,8 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param string $simpleClassName
      *
      * @return string
+     *
+     * @psalm-return class-string
      */
     abstract protected function getFqcnFromAlias($namespaceAlias, $simpleClassName);
 
@@ -197,6 +208,8 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      *
      * @throws ReflectionException
      * @throws MappingException
+     *
+     * @psalm-param class-string|string $className
      */
     public function getMetadataFor($className)
     {
@@ -210,6 +223,7 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
 
             $realClassName = $this->getFqcnFromAlias($namespaceAlias, $simpleClassName);
         } else {
+            /** @psalm-var class-string $className */
             $realClassName = $this->getRealClass($className);
         }
 
@@ -299,6 +313,8 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param string $name
      *
      * @return string[]
+     *
+     * @psalm-param class-string $name
      */
     protected function getParentClasses($name)
     {
@@ -329,6 +345,8 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
      * @param string $name The name of the class for which the metadata should get loaded.
      *
      * @return string[]
+     *
+     * @psalm-param class-string $name
      */
     protected function loadMetadata($name)
     {
@@ -417,6 +435,8 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
 
     /**
      * {@inheritDoc}
+     *
+     * @psalm-param class-string|string $class
      */
     public function isTransient($class)
     {
@@ -430,6 +450,7 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
             $class                              = $this->getFqcnFromAlias($namespaceAlias, $simpleClassName);
         }
 
+        /** @psalm-var class-string $class */
         return $this->getDriver()->isTransient($class);
     }
 
@@ -464,15 +485,42 @@ abstract class AbstractClassMetadataFactory implements ClassMetadataFactory
 
     /**
      * Gets the real class name of a class name that could be a proxy.
+     *
+     * @template T of object
+     * @psalm-param class-string<Proxy<T>>|class-string<T> $class
+     * @psalm-return class-string<T>
      */
     private function getRealClass(string $class): string
     {
-        $pos = strrpos($class, '\\' . Proxy::MARKER . '\\');
-
-        if ($pos === false) {
-            return $class;
+        if ($this->proxyClassNameResolver === null) {
+            $this->createDefaultProxyClassNameResolver();
         }
 
-        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+        assert($this->proxyClassNameResolver !== null);
+
+        return $this->proxyClassNameResolver->resolveClassName($class);
+    }
+
+    private function createDefaultProxyClassNameResolver(): void
+    {
+        $this->proxyClassNameResolver = new class implements ProxyClassNameResolver {
+            /**
+             * @template T of object
+             * @psalm-param class-string<Proxy<T>>|class-string<T> $className
+             * @psalm-return class-string<T>
+             */
+            public function resolveClassName(string $className): string
+            {
+                $pos = strrpos($className, '\\' . Proxy::MARKER . '\\');
+
+                if ($pos === false) {
+                    /** @psalm-var class-string<T> */
+                    return $className;
+                }
+
+                /** @psalm-var class-string<T> */
+                return substr($className, $pos + Proxy::MARKER_LENGTH + 2);
+            }
+        };
     }
 }
